@@ -1,0 +1,20 @@
+name: 'Comment Dev Deployment Workflow'
+
+on:
+  pull_request_review:
+    types: [submitted, edited]
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  pipeline:
+    name: Dev Environment Pipeline
+    if: contains(github.event.review.body, 'deploy to dev') || contains(github.event.comment.body, 'deploy to dev')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
